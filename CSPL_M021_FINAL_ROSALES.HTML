@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M021 CSPL101 ROSALES FINAL PROJECT</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <!--REST API Method[0]-->
+    <br>
+    <center><h1>ROSALES, CHRISTIAN PAUL R.<br>M021 CSPL101 FINAL PROJECT</h1></center>
+
+    <form id="form">
+        <br>
+        <div class="container">
+            <center><b>Choose REST API Method</b> <br></center><br>
+            <div class="row justify-content-center">
+                
+                <div class="col-2" style="background-color: lavender;border: 2px solid;box-shadow: 5px 10px #888888">
+                    <br>
+                    <input type="radio" name="method" id="GET" onclick="sector()"> GET<br>
+                    <input type="radio" name="method" id="POST" onclick="sector()"> POST<br><br>
+                </div>
+            </div><br>
+      
+        </div>
+        
+    </form>
+
+
+    <!--Post Choices[1]-->
+    <!--We created separated form for choices so it will not be confusing when it comes to looping-->
+
+    <form id="choose">
+        <div class="container">
+            <br>
+            <center><b>Choose 1 (per column) to post <p style="color:red">(For post method only)</p></b></center>
+            <div class="row justify-content-center">
+                <!--Column 1 Title-->
+                <div class="col-2" style="background-color: pink;border: 2px solid; box-shadow: 11px 10px #888888">
+                        <br>
+                        <b><h4>Title</h4></b>
+
+                        <input type="radio" name="choose_1" id="1st" value="The"> The<br>
+                        <input type="radio" name="choose_1" id="2nd" value="Happy"> Happy<br>
+                        <input type="radio" name="choose_1" id="3rd" value="Sad"> Sad<br>
+                        <input type="radio" name="choose_1" id="4th" value="Lazy"> Lazy<br><br>
+             
+                </div>
+                <!--Column 2 Body-->
+                <div class="col-2" style="background-color: lightblue;border: 2px solid;box-shadow: 5px 10px #888888"">
+                    <br>
+                        <b><h4>Animal</h4></b>
+
+                    <input type="radio" name="choose_2" id="1st_2" value="Cat"> Cat<br>
+                    <input type="radio" name="choose_2" id="2nd_2" value="Dog"> Dog<br>
+                    <input type="radio" name="choose_2" id="3rd_2" value="Fox"> Fox<br>
+                    <input type="radio" name="choose_2" id="4th_2" value="Bear"> Bear<br><br>
+         
+                </div>
+            
+            </div>
+
+        </div>
+        
+    </form>
+
+    <!--Button Code-->
+
+    <br><br>
+        <center><button type="submit" class="btn btn-dark" onclick="method()">> Perform Operation <</button></center><br>
+        <center><button type="button" class="btn btn-danger" onclick="clearAll()">> Clear <</button></center><br>
+    
+    <!--Output Code-->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-6" style="background-color: lavenderblush; border: 3px solid; box-shadow: 5px 10px #888888">
+                <br>
+                
+                <center>
+                    <h1>Output:</h1>
+                    <br>
+                    <h4 id="result"></h4>
+                
+                </center>
+                <br>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        var form = document.getElementById("form")
+        
+        form.addEventListener('submit',function(e){
+            e.preventDefault()
+                method()
+            
+        })
+
+        //Function to whether disable and unchecks radio button of choices if GET is selected and enable if POST is selected
+        function sector(){
+            var get = document.getElementById('GET')
+            var post = document.getElementById('POST')
+            var form = document.forms[1] //Form[1] is for choices for the post
+            var i = 0
+
+            //Disable The Radio Button
+            if(get.checked){
+                for(i = 0; i < form.length; i++){
+                    form[i].disabled = true
+                    form[i].checked = false
+                }
+            }
+
+            //Enable The Radio Button
+            if(post.checked){
+                for(i = 0; i < form.length; i++){
+                    form[i].disabled = false
+                }
+            }
+        }
+
+        //Function for determining what is checked radio button for API method
+
+        function method(){
+            var get_radio = document.getElementById("GET")
+            var get_post = document.getElementById("POST")
+
+            if(get_radio.checked){ //if radio or get is checked, perform GET Function
+                
+                getJSON()
+            }
+
+            if(get_post.checked){ //if post is checked, perform POST Function
+                getResponse()
+            }
+            
+        }
+
+        //Function for Clearing all selected values
+
+        function clearAll(){
+            var get = document.getElementById('GET')
+            var post = document.getElementById('POST')
+            var forms_1 = document.forms[1] //[1] index for title and body choices form for post
+            var i = 0
+
+            document.getElementById("result").innerHTML = null //Set the result to nothing or NULL to clear the result or output field
+
+            //Clear Method Selected
+            if(get.checked){
+                get.checked = false
+            }else{
+                post.checked = false
+            }
+
+            //Clear Choices Selected
+            for(i = 0; i < forms_1.length; i++){
+                forms_1[i].checked = false
+            }
+     
+        }
+
+        //GET Method Function
+        async function getJSON(){
+            const response = await fetch('https://jsonplaceholder.typicode.com/posts/3')
+            if(!response.ok){
+                throw new Error("Something Went Wrong" + response.statusText)
+            }
+            const data = await response.json()
+            console.log(data)
+
+            //Displaying the GET title and body response from the server
+            document.getElementById("result").innerHTML = "<b>Title:</b> " + data.title + "<br/>" + "<br/>" +"<b>Body:</b> "+ data.body
+            
+        }
+
+        //POST Method Function
+        async function getResponse(){
+            var column_1 = document.forms[1] //[1] index for title and body choices form
+            var i = 0
+            var choose_col1 = "" //variable for title
+            var choose_col2 = "" //variable for animal
+
+            //loop for column 1 (title) for determining what is checked radio button
+            for (i = 0; i < column_1.length; i++){
+                if(i == 3 && choose_col1 == ""){ //If there is no selected radio at first column. The first column starts at index 0 and ends at index 3 radio button
+                    choose_col1 = "No Selection" //Display this if the user does not pick what to post, say 'No Selection'
+                    break
+                }
+                else if(column_1[i].checked){ //Else if there is selected, get the value of that checked radio button
+                    choose_col1 = column_1[i].value
+                    break      
+                }
+                
+            }
+
+            //loop for column 2 (animal) for determining what is checked radio button
+            for (i = 0; i < column_1.length; i++){
+                if(column_1[i].checked){
+                    if(column_1[i].value == choose_col1){ //To prevent getting column 1 checked radio button
+                        continue
+                    }
+                    choose_col2 = column_1[i].value
+                }
+                
+            }
+
+            //Condition is outside the loop since we need the loop to finish the scan for checked radio column 2. 
+            //We did not use the index method the same as column 1 to preserved code length. We just use the default value of column 2
+            //To determine if there is no selected value after the loop is finished
+            if(choose_col2 == ""){
+                choose_col2 = "No Selection"
+            }
+
+            //POST the selected radio buttons
+            const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                body: JSON.stringify({
+                    title: choose_col1,
+                    body: choose_col2,
+                    user: 1,
+                }),
+                headers:{
+                    'Content-type':'application/json; charset=UTF-8',
+                },
+            })
+
+            //For error checking
+            if (!response.ok){
+                throw new Error("Something Went Wrong" + response.statusText)
+            }
+            const data = await response.json()
+            console.log(data)
+
+            //For displaying the posted choice in the result field
+            var final = "<b>Title:</b> "+ data.title + "<br/>" + "<b>Animal:</b> " +data.body
+            document.getElementById("result").innerHTML = final
+
+        }
+
+        
+    </script>
+
+</body>
+</html>
